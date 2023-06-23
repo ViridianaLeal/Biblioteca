@@ -224,7 +224,7 @@ cargarLibros();
 }
 
 const cargarEditoriales=async()=>{
-  var respuesta=await fetch(urlServer+"php/editorial/cargarEditoriales.php",{});
+  var respuesta=await fetch("php/editorial/cargarEditoriales.php",{});
   var registrosHTML=``;
   var resultado=await respuesta.json();
 

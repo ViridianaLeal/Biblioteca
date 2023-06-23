@@ -2,19 +2,21 @@ let libros=JSON.parse(localStorage.getItem("libros"));
 if(!libros){  
   localStorage.setItem("libros",JSON.stringify([]));}
 
-const mostrarLibros=(editorial)=>{
+const cargarCatalogo=async(editorial)=>{
+    var respuesta=await fetch("php/libro/cargarLibros.php",{});
+    var registrosHTML=``;
+    var resultado=await respuesta.json();
+
     var librosHTML="";
-    libros=JSON.parse(localStorage.getItem("libros"))
     let i=1;
     if(editorial=="0"){
-        libros.map(libro=>{       
+        resultado.data.forEach(libro=>{      
             if(i%2==1){librosHTML+=`<div class="row W-50">`}
             librosHTML+=`<div class="col">
                             <div class="card bg-white text-dark w-100 m-auto mb-1 p-4">
                                 <img src="img.jpg" width="100%">
-                                <p><b>${libro.nombre.toUpperCase()}</b></p>
-                                <p><b>$${libro.precio}</b></p>
-                                                                    <p><b>${libro.autor}</b></p>
+                                <p><b>${libro[1].toUpperCase()}</b></p>
+                                <p><b>$${libro[2]}</b></p>
                                 <button class="btn btn-primary" onclick="comprarLibro(${i})">Comprar</button>
                             </div>
                             </div>`
@@ -22,15 +24,14 @@ const mostrarLibros=(editorial)=>{
             i++;
         })
         }else{
-            libros.map(libro=>{                
-                if(editorial==libro.editorial){
+            resultado.data.forEach(libro=>{            
+                if(editorial==libro[3]){
                     if(i%2==1){librosHTML+=`<div class="row W-50">`}
                 librosHTML+=`<div class="col">
                                 <div class="card bg-white text-dark w-100 m-auto mb-1 p-4">
                                     <img src="img.jpg" width="100%">
-                                    <p><b>${libro.nombre.toUpperCase()}</b></p>
-                                    <p><b>$${libro.precio}</b></p>
-                                                                        <p><b>${libro.autor}</b></p>
+                                    <p><b>${libro[1].toUpperCase()}</b></p>
+                                    <p><b>$${libro[2]}</b></p>
                                     <button class="btn btn-primary" onclick="comprarLibro(${i})">Comprar</button>
                                 </div>
                                 </div>`                          
@@ -45,12 +46,13 @@ const mostrarLibros=(editorial)=>{
 
 
 
-const mostrarEditoriales=()=>{
-    var editorialesHTML="";
-    editoriales=JSON.parse(localStorage.getItem("editoriales"))
-    editorialesHTML+=`<option value="0">TODAS</option>`; 
-    editoriales.map(editorial=>{
-        editorialesHTML+=`<option value="${editorial.nombre}">${editorial.nombre}</option>`;        
-    })
-    document.querySelector("#editorial").innerHTML=editorialesHTML;
+const cargarEditoriales=async()=>{
+    var respuesta=await fetch("php/editorial/cargarEditoriales.php",{});
+    var registrosHTML=``;
+    var resultado=await respuesta.json();
+    registrosHTML=`<option value="0">TODAS</option>`;
+    resultado.data.forEach(fila=>{
+        registrosHTML+=`<option value"${fila[1]}">${fila[1]}</option>`;
+    });
+    document.querySelector("#editorial").innerHTML=registrosHTML;
 }
